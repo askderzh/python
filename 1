@@ -1,0 +1,26 @@
+import numpy as np
+import pandas as pd
+df=pd.read_csv('downloads/201809-citibike-tripdata.csv/201809-citibike-tripdata.csv')
+#question 1
+df.shape
+
+#question 3
+df[df['start station id']==df['end station id']].shape
+#question 4
+df.groupby('bikeid')['bikeid'].agg(['count']).sort_values(by = 'count',ascending = False)
+#question 5
+df1=df.groupby(['bikeid']).agg({'tripduration':sum, 'bikeid':'count'})
+(df1['tripduration']/df1['bikeid']).sort_values(ascending=False)
+#question 6
+df[df['start station id'].isnull()].shape
+#question 7
+df1=df.groupby(['bikeid','usertype']).agg({'tripduration':sum, 'bikeid':'count'})
+df2=df1['tripduration']/df1['bikeid']
+df4=df.groupby(['usertype']).agg({'tripduration':sum, 'usertype':'count'})
+(df4['tripduration']/60)/(df4['usertype'])
+#question 8
+!pip install geopy
+from geopy.distance import distance
+df5 = df[df['start station id'] != df['end station id']]
+df5.apply(lambda x: distance((x['start station latitude'],x['start station longitude']), \
+                           (x['end station latitude'],x['end station longitude'])).kilometers,axis = 1).mean()
